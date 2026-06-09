@@ -3,6 +3,8 @@ package ua.raccon.myovdp.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "payments")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
