@@ -1,5 +1,6 @@
-package ua.raccon.myovdp.entity;
+package ua.raccoon.myovdp.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Bond {
     @Column(nullable = false)
     private LocalDate maturityDate; // Дата погашення
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "bond", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments;
 

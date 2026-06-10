@@ -1,12 +1,12 @@
-package ua.raccon.myovdp;
+package ua.raccoon.myovdp;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import ua.raccon.myovdp.entity.Bond;
-import ua.raccon.myovdp.entity.Payment;
-import ua.raccon.myovdp.service.OvdpService;
+import ua.raccoon.myovdp.entity.Bond;
+import ua.raccoon.myovdp.entity.Payment;
+import ua.raccoon.myovdp.service.OvdpService;
 
 import java.time.LocalDate;
 

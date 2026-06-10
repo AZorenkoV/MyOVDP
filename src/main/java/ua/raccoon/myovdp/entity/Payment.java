@@ -1,5 +1,6 @@
-package ua.raccon.myovdp.entity;
+package ua.raccoon.myovdp.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -22,6 +23,7 @@ public class Payment {
     @Column(nullable = false)
     private String status;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "bond_id", nullable = false)
     private Bond bond;
