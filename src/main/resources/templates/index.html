@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Домашній Сервер</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .menu-container { text-align: center; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; margin-bottom: 30px; }
+        .menu-buttons { display: flex; gap: 20px; justify-content: center; }
+        .btn { display: inline-block; width: 200px; padding: 20px; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px; color: white; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-ovdp { background-color: #34495e; }
+        .btn-budget { background-color: #7f8c8d; cursor: not-allowed; opacity: 0.6; }
+        .subtitle { color: #7f8c8d; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="menu-container">
+    <h1>🏠 Домашній Панель Управління</h1>
+    <div class="menu-buttons">
+        <a href="/ovdp" class="btn btn-ovdp">📈 Мої ОВДП</a>
+
+        <div>
+            <a href="#" class="btn btn-budget">💰 Домашній Бюджет</a>
+            <div class="subtitle">(у розробці...)</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
