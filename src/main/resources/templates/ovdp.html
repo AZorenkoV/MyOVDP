@@ -11,14 +11,76 @@
         th { background-color: #34495e; color: white; text-transform: uppercase; font-size: 14px; }
         tr:nth-child(even) { background-color: #f9f9f9; }
         tr:hover { background-color: #f1f1f1; }
+
+        /* Стилі для форми */
+        .form-container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 13px; font-weight: bold; color: #7f8c8d; margin-bottom: 5px; }
+        .form-group input { padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; }
+        .btn-submit { background-color: #27ae60; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn-submit:hover { background-color: #219653; }
+        .back-link { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #34495e; font-weight: bold; }
+
         .status-pending { background-color: #ffeaa7; color: #d63031; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
         .type-coupon { color: #2980b9; font-weight: bold; }
         .type-maturity { color: #27ae60; font-weight: bold; }
+
+        /* Нові стилі для підсвічування статусів */
+        .row-paid { background-color: #e8f5e9 !important; } /* Ніжно-зелений для виплачених */
+        .row-overdue { background-color: #ffeade !important; } /* Ніжно-червоний для прострочених */
+
+        .status-paid { background-color: #2ecc71; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .btn-pay { background-color: #2ecc71; color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        .btn-pay:hover { background-color: #27ae60; }
     </style>
 </head>
 <body>
 
+<a href="/" class="back-link">⬅️ На головну</a>
 <h1>📊 Мій Інвестиційний Портфель ОВДП</h1>
+
+<div class="form-container">
+    <h3>➕ Додати нову облігацію</h3>
+    <form th:action="@{/ovdp/add}" method="POST">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>ISIN код</label>
+                <input type="text" name="isin" placeholder="UA4000..." required>
+            </div>
+            <div class="form-group">
+                <label>Назва</label>
+                <input type="text" name="name" placeholder="Назва облігації" required>
+            </div>
+            <div class="form-group">
+                <label>Брокер</label>
+                <input type="text" name="broker" placeholder="Monobank, ICU..." required>
+            </div>
+            <div class="form-group">
+                <label>Ціна за 1 шт (грн)</label>
+                <input type="number" name="price" step="0.01" placeholder="985.50" required>
+            </div>
+            <div class="form-group">
+                <label>Кількість (шт)</label>
+                <input type="number" name="quantity" placeholder="10" required>
+            </div>
+            <div class="form-group">
+                <label>Сума купона на 1 шт</label>
+                <input type="number" name="couponAmount" step="0.01" placeholder="78.20" required>
+            </div>
+            <div class="form-group">
+                <label>Дата найближчої виплати</label>
+                <input type="date" name="firstPaymentDate" required>
+            </div>
+            <div class="form-group">
+                <label>Дата погашення</label>
+                <input type="date" name="maturityDate" required>
+            </div>
+        </div>
+        <button type="submit" class="btn-submit">Зберегти облігацію</button>
+    </form>
+</div>
+
 <table>
     <thead>
     <tr>
@@ -29,7 +91,7 @@
         <th>Кількість</th>
         <th>Купон (1 шт)</th>
         <th>Погашення</th>
-    </tr>
+        <th>Дія</th> </tr>
     </thead>
     <tbody>
     <tr th:each="bond : ${bonds}">
@@ -40,11 +102,59 @@
         <td th:text="${bond.quantity}">0</td>
         <td th:text="${bond.couponAmount} + ' грн'">0.00</td>
         <td th:text="${bond.maturityDate}">2026-01-01</td>
+        <td>
+            <a th:href="@{/ovdp/delete/{id}(id=${bond.id})}"
+               style="color: #d32f2f; font-weight: bold; text-decoration: none;"
+               onclick="return confirm('Ви впевнені, що хочете видалити цю ОВДП та всі її виплати?')">
+                ❌ Видалити
+            </a>
+        </td>
     </tr>
     </tbody>
 </table>
 
 <h2>📅 Загальний календар майбутніх виплат</h2>
+
+<div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+    <form th:action="@{/ovdp}" method="GET" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; width: 100%;">
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="font-weight: bold; color: #7f8c8d; font-size: 14px;">Облігація:</label>
+            <select name="isin" style="padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; min-width: 200px;">
+                <option value="ALL" th:selected="${selectedIsin == 'ALL'}">✨ Всі облігації</option>
+                <option th:each="bond : ${bonds}"
+                        th:value="${bond.isin}"
+                        th:text="${bond.name} + ' (' + ${bond.isin} + ')'"
+                        th:selected="${selectedIsin == bond.isin}">Назва ОВДП</option>
+            </select>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="font-weight: bold; color: #7f8c8d; font-size: 14px;">Тип виплати:</label>
+            <select name="type" style="padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; min-width: 160px;">
+                <option value="ALL" th:selected="${selectedType == 'ALL'}">✨ Всі виплати</option>
+                <option value="COUPON" th:selected="${selectedType == 'COUPON'}">🎫 Лише КУПОНИ</option>
+                <option value="MATURITY" th:selected="${selectedType == 'MATURITY'}">💰 Лише ПОГАШЕННЯ ТІЛА</option>
+            </select>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="font-weight: bold; color: #7f8c8d; font-size: 14px;">Статус:</label>
+            <select name="status" style="padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; min-width: 160px;">
+                <option value="ALL" th:selected="${selectedStatus == 'ALL'}">✨ Всі статуси</option>
+                <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">⏱️ Лише ОЧІКУЄТЬСЯ</option>
+                <option value="PAID" th:selected="${selectedStatus == 'PAID'}">✅ Лише ВИПЛАЧЕНО</option>
+            </select>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+            <button type="submit" style="background-color: #34495e; color: white; border: none; padding: 8px 15px; font-size: 14px; font-weight: bold; border-radius: 4px; cursor: pointer;">Застосувати</button>
+            <a href="/ovdp" style="color: #7f8c8d; text-decoration: none; font-size: 14px;">❌ Скинути</a>
+        </div>
+
+    </form>
+</div>
+
 <table>
     <thead>
     <tr>
@@ -53,10 +163,13 @@
         <th>Тип виплати</th>
         <th>Сума до отримання</th>
         <th>Статус</th>
+        <th>Дії</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="payment : ${calendar}">
+    <tr th:each="payment : ${calendar}"
+        th:classappend="${payment.status == 'PAID'} ? 'row-paid' : (${payment.status == 'PENDING' and payment.paymentDate.toString() < #calendars.format(#calendars.createNow(), 'yyyy-MM-dd')} ? 'row-overdue')">
+
         <td th:text="${payment.paymentDate}" style="font-weight: bold;">2026-01-01</td>
         <td th:text="${payment.bond.name}">Назва ОВДП</td>
         <td>
@@ -64,9 +177,24 @@
             <span th:if="${payment.type == 'MATURITY'}" class="type-maturity">💰 ПОГАШЕННЯ ТІЛА</span>
         </td>
         <td th:text="${payment.amount} + ' грн'" style="font-weight: bold; color: #2c3e50;">0.00</td>
-        <td><span class="status-pending" th:text="${payment.status}">PENDING</span></td>
+        <td>
+            <span th:if="${payment.status == 'PENDING'}" class="status-pending">⏱️ ОЧІКУЄТЬСЯ</span>
+            <span th:if="${payment.status == 'PAID'}" class="status-paid">✅ ВИПЛАЧЕНО</span>
+        </td>
+        <td>
+            <a th:if="${payment.status == 'PENDING'}" th:href="@{/ovdp/payment/pay/{id}(id=${payment.id})}" class="btn-pay">✅ Отримано</a>
+            <a th:href="@{/ovdp/payment/edit/{id}(id=${payment.id})}" style="color: #2980b9; font-weight: bold; text-decoration: none; font-size: 13px;">✏️ Змінити</a>
+        </td>
     </tr>
     </tbody>
+
+    <tfoot style="background-color: #eaeded; font-weight: bold; border-top: 3px solid #bdc3c7;">
+    <tr>
+        <td colspan="3" style="text-align: right; padding: 15px;">🧮 ВСЬОГО ЗА ФІЛЬТРОМ:</td>
+        <td th:text="${#numbers.formatDecimal(totalAmount, 1, 2)} + ' грн'" style="color: #2c3e50; font-size: 16px; padding: 15px;">0.00 грн</td>
+        <td colspan="2"></td>
+    </tr>
+    </tfoot>
 </table>
 
 </body>

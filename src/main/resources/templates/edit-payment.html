@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редагування виплати</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; margin: 40px; display: flex; justify-content: center; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
+        h2 { color: #2c3e50; margin-top: 0; border-bottom: 2px solid #f1f1f1; padding-bottom: 10px; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+        label { font-size: 13px; font-weight: bold; color: #7f8c8d; margin-bottom: 5px; }
+        input, select { padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; }
+        .btn-box { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; text-align: center; text-decoration: none; font-size: 14px; }
+        .btn-save { background-color: #27ae60; color: white; }
+        .btn-cancel { background-color: #7f8c8d; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>✏️ Коригування виплати</h2>
+    <p style="font-size: 14px; color: #7f8c8d;">Облігація: <strong th:text="${payment.bond.name}" style="color: #2c3e50;">ОВДП</strong></p>
+
+    <form th:action="@{/ovdp/payment/save}" method="POST" th:object="${payment}">
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{bond.id}">
+        <input type="hidden" th:field="*{type}">
+
+        <div class="form-group">
+            <label>Дата виплати (Мінфін/Брокер)</label>
+            <input type="date" th:field="*{paymentDate}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Сума виплати (грн)</label>
+            <input type="number" step="0.01" th:field="*{amount}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Статус виплати</label>
+            <select th:field="*{status}">
+                <option value="PENDING">⏱️ Очікується (PENDING)</option>
+                <option value="PAID">✅ Виплачено (PAID)</option>
+            </select>
+        </div>
+
+        <div class="btn-box">
+            <button type="submit" class="btn btn-save">Зберегти зміни</button>
+            <a href="/ovdp" class="btn btn-cancel">Скасувати</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

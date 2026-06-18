@@ -57,6 +57,21 @@ public class OvdpService {
         return savedBond;
     }
 
+    public void deleteBond(Long id) {
+        bondRepository.deleteById(id);
+    }
+
+    // Знайти виплату за ID для відображення на формі редагування
+    public Payment getPaymentById(Long id) {
+        return paymentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Виплату з ID " + id + " не знайдено"));
+    }
+
+    // Зберегти відредаговану виплату
+    public void savePayment(Payment payment) {
+        paymentRepository.save(payment);
+    }
+
     // Додатковий метод: отримати всі ОВДП із бази
     public List<Bond> getAllBonds() {
         return bondRepository.findAll();
@@ -65,5 +80,19 @@ public class OvdpService {
     // Додатковий метод: отримати весь календар виплат (відсортований за датою)
     public List<Payment> getCalendar() {
         return paymentRepository.findAllByOrderByPaymentDateAsc();
+    }
+
+    // Повна фільтрація: за ISIN, типом виплати та статусом одночасно
+    public List<Payment> getCalendarFiltered(String isin, String type, String status) {
+        return paymentRepository.findAll().stream()
+                // 1. Фільтр за облігацією
+                .filter(p -> isin == null || isin.isEmpty() || isin.equals("ALL") || p.getBond().getIsin().equals(isin))
+                // 2. Фільтр за типом виплати (КУПОН/ПОГАШЕННЯ)
+                .filter(p -> type == null || type.isEmpty() || type.equals("ALL") || p.getType().equals(type))
+                // 3. Фільтр за статусом виплати (PENDING/PAID)
+                .filter(p -> status == null || status.isEmpty() || status.equals("ALL") || p.getStatus().equals(status))
+                // Сортування за датою
+                .sorted((p1, p2) -> p1.getPaymentDate().compareTo(p2.getPaymentDate()))
+                .toList();
     }
 }
