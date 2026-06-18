@@ -33,6 +33,13 @@
         .status-paid { background-color: #2ecc71; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
         .btn-pay { background-color: #2ecc71; color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-right: 5px; }
         .btn-pay:hover { background-color: #27ae60; }
+
+        .col-date { width: 120px; text-align: center; }
+        .col-name { width: 120px;}
+        .col-text { text-align: left; }
+        .col-amount { width: 150px; text-align: right; padding-right: 20px; }
+        .col-status { width: 130px; text-align: center; }
+        .col-actions { width: 160px; text-align: center; }
     </style>
 </head>
 <body>
@@ -158,30 +165,36 @@
 <table>
     <thead>
     <tr>
-        <th>Дата виплати</th>
-        <th>Облігація</th>
-        <th>Тип виплати</th>
-        <th>Сума до отримання</th>
-        <th>Статус</th>
-        <th>Дії</th>
+        <th class="col-date">Дата виплати</th>
+        <th class="col-name">Облігація</th>
+        <th class="col-text">Тип виплати</th>
+        <th class="col-amount">Сума до отримання</th>
+        <th class="col-status">Статус</th>
+        <th class="col-actions">Дії</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="payment : ${calendar}"
         th:classappend="${payment.status == 'PAID'} ? 'row-paid' : (${payment.status == 'PENDING' and payment.paymentDate.toString() < #calendars.format(#calendars.createNow(), 'yyyy-MM-dd')} ? 'row-overdue')">
 
-        <td th:text="${#temporals.format(payment.paymentDate, 'dd.MM.yyyy')}" style="font-weight: bold;">01.01.2026</td>
-        <td th:text="${payment.bond.name}">Назва ОВДП</td>
-        <td>
+<!--        /*Дата виплати*/-->
+        <td class="col-date" th:text="${#temporals.format(payment.paymentDate, 'dd.MM.yyyy')}" style="font-weight: bold;">01.01.2026</td>
+<!--        /*Облігація*/-->
+        <td class="col-name" th:text="${payment.bond.name}">Назва ОВДП</td>
+<!--        /*Тип виплати*/-->
+        <td class="col-text">
             <span th:if="${payment.type == 'COUPON'}" class="type-coupon">🎫 КУПОН</span>
             <span th:if="${payment.type == 'MATURITY'}" class="type-maturity">💰 ПОГАШЕННЯ ТІЛА</span>
         </td>
-        <td th:text="${payment.amount} + ' грн'" style="font-weight: bold; color: #2c3e50;">0.00</td>
-        <td>
+<!--        /*Сума до отримання*/-->
+        <td class="col-amount" th:text="${payment.amount} + ' грн'" style="font-weight: bold; color: #2c3e50;">0.00</td>
+<!--        /*Статус*/-->
+        <td class="col-status">
             <span th:if="${payment.status == 'PENDING'}" class="status-pending">⏱️ ОЧІКУЄТЬСЯ</span>
             <span th:if="${payment.status == 'PAID'}" class="status-paid">✅ ВИПЛАЧЕНО</span>
         </td>
-        <td>
+<!--        /*Дії*/-->
+        <td class="col-actions">
             <a th:if="${payment.status == 'PENDING'}" th:href="@{/ovdp/payment/pay/{id}(id=${payment.id})}" class="btn-pay">✅ Отримано</a>
             <a th:href="@{/ovdp/payment/edit/{id}(id=${payment.id})}" style="color: #2980b9; font-weight: bold; text-decoration: none; font-size: 13px;">✏️ Змінити</a>
         </td>
