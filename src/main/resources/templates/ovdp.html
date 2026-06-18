@@ -101,7 +101,7 @@
         <td th:text="${bond.price} + ' грн'">0.00</td>
         <td th:text="${bond.quantity}">0</td>
         <td th:text="${bond.couponAmount} + ' грн'">0.00</td>
-        <td th:text="${bond.maturityDate}">2026-01-01</td>
+        <td th:text="${#temporals.format(bond.maturityDate, 'dd.MM.yyyy')}">01.01.2026</td>
         <td>
             <a th:href="@{/ovdp/delete/{id}(id=${bond.id})}"
                style="color: #d32f2f; font-weight: bold; text-decoration: none;"
@@ -170,7 +170,7 @@
     <tr th:each="payment : ${calendar}"
         th:classappend="${payment.status == 'PAID'} ? 'row-paid' : (${payment.status == 'PENDING' and payment.paymentDate.toString() < #calendars.format(#calendars.createNow(), 'yyyy-MM-dd')} ? 'row-overdue')">
 
-        <td th:text="${payment.paymentDate}" style="font-weight: bold;">2026-01-01</td>
+        <td th:text="${#temporals.format(payment.paymentDate, 'dd.MM.yyyy')}" style="font-weight: bold;">01.01.2026</td>
         <td th:text="${payment.bond.name}">Назва ОВДП</td>
         <td>
             <span th:if="${payment.type == 'COUPON'}" class="type-coupon">🎫 КУПОН</span>
