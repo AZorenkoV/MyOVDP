@@ -1,31 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Домашній Сервер</title>
+    <title>Фінансовий кабінет</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .menu-container { text-align: center; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { color: #2c3e50; margin-bottom: 30px; }
-        .menu-buttons { display: flex; gap: 20px; justify-content: center; }
-        .btn { display: inline-block; width: 200px; padding: 20px; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px; color: white; transition: transform 0.2s, box-shadow 0.2s; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn-ovdp { background-color: #34495e; }
-        .btn-budget { background-color: #7f8c8d; cursor: not-allowed; opacity: 0.6; }
-        .subtitle { color: #7f8c8d; font-size: 14px; margin-top: 5px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .hub-container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        .grid-hub {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .hub-card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 5px solid #2c3e50;
+        }
+        .hub-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .hub-card.ovdp {
+            border-top-color: #3498db; /* Синій для ОВДП */
+        }
+        .hub-card.budget {
+            border-top-color: #e74c3c; /* Червоний для Бюджету */
+        }
+        .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .hub-card h2 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 20px;
+        }
+        .hub-card p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
 
-<div class="menu-container">
-    <h1>🏠 Домашній Панель Управління</h1>
-    <div class="menu-buttons">
-        <a href="/ovdp" class="btn btn-ovdp">📈 Мої ОВДП</a>
+<div class="hub-container">
+    <h1>Особистий фінансовий кабінет</h1>
+    <div class="subtitle">Єдиний простір для обліку інвестицій та планування витрат</div>
 
-        <div>
-            <a href="#" class="btn btn-budget">💰 Домашній Бюджет</a>
-            <div class="subtitle">(у розробці...)</div>
-        </div>
+    <div class="grid-hub">
+        <a href="/ovdp" class="hub-card ovdp">
+            <div class="icon">📈</div>
+            <h2>Портфель ОВДП</h2>
+            <p>Контроль облігацій внутрішньої державної позики, графік купонів та розрахунок дат виплат.</p>
+        </a>
+
+        <a href="/budget" class="hub-card budget">
+            <div class="icon">💰</div>
+            <h2>Сімейний Бюджет</h2>
+            <p>Облік щоденних витрат, аналітика за категоріями та контроль залишків на рахунках.</p>
+        </a>
     </div>
 </div>
 
