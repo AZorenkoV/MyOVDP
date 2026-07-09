@@ -7,6 +7,7 @@ import ua.raccoon.mybudget.repository.ExpenseRepository;
 import ua.raccoon.mybudget.repository.IncomeRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -83,5 +84,13 @@ public class BudgetService {
                                 Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)
                         )
                 ));
+    }
+
+    public List<Expense> getExpensesForPeriod(LocalDate start, LocalDate end) {
+        return expenseRepository.findByDateBetweenOrderByDateDesc(start, end);
+    }
+
+    public List<Income> getIncomesForPeriod(LocalDate start, LocalDate end) {
+        return incomeRepository.findByDateBetweenOrderByDateDesc(start, end);
     }
 }

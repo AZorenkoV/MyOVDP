@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Архів витрат та доходів</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        th { position: sticky; top: 0; background-color: #f8f9fa; z-index: 1; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a th:href="@{/budget}" class="btn btn-secondary">&larr; На головну панель</a>
+        <h2 class="mb-0">📜 Історія фінансів</h2>
+    </div>
+
+    <div class="card p-3 mb-4 shadow-sm">
+        <form th:action="@{/budget/history}" method="get" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="monthSelect" class="col-form-label fw-bold">Оберіть період:</label>
+            </div>
+            <div class="col-auto">
+                <input type="month" id="monthSelect" name="month" th:value="${selectedMonth}" class="form-control">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Показати</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-6">
+            <div class="card bg-success text-white p-3 shadow-sm">
+                <h5>Надходження за місяць</h5>
+                <h3 th:text="${totalIncomes} + ' грн'">0 грн</h3>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-danger text-white p-3 shadow-sm">
+                <h5>Витрати за місяць</h5>
+                <h3 th:text="${totalExpenses} + ' грн'">0 грн</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h4 class="text-success mb-3">Green / Доходи</h4>
+                <div class="table-container border rounded">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Категорія</th>
+                            <th>Сума</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="inc : ${incomes}">
+                            <td th:text="${inc.date}">2026-07-01</td>
+                            <td th:text="${inc.category}">Зарплата</td>
+                            <td th:text="${inc.amount} + ' грн'">0</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(incomes)}">
+                            <td colspan="3" class="text-center text-muted">Немає записів за цей місяць</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h4 class="text-danger mb-3">Red / Витрати</h4>
+                <div class="table-container border rounded">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Категорія</th>
+                            <th>Сума</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="exp : ${expenses}">
+                            <td th:text="${exp.date}">2026-07-01</td>
+                            <td th:text="${exp.category}">Продукти</td>
+                            <td th:text="${exp.amount} + ' грн'">0</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(expenses)}">
+                            <td colspan="3" class="text-center text-muted">Немає записів за цей місяць</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
